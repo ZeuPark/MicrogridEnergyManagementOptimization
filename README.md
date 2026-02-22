@@ -105,6 +105,26 @@ Synthetic load and price profiles are included for benchmarking and reproducibil
 pytest tests/ -v
 ```
 
+## Conclusion
+
+This project demonstrates that optimization-based battery dispatch can materially reduce electricity procurement cost under volatile wholesale market conditions.
+
+Key outcomes include:
+
+1. **Economic Performance**
+   The LP-based optimization consistently reduced total electricity cost compared to a no-storage baseline by strategically shifting grid imports away from high-price intervals.
+
+2. **Peak Import Mitigation**
+   The optimized schedule significantly reduced peak grid import levels, indicating improved load smoothing and reduced exposure to extreme price periods.
+
+3. **Operational Interpretability**
+   The resulting dispatch pattern aligns with expected economic behavior—charging during periods of solar surplus or low prices and discharging during evening peak demand—confirming model consistency with market incentives.
+
+4. **Computational Efficiency**
+   The convex formulation enables fast solution times, supporting scalability to longer horizons and potential rolling-horizon implementations.
+
+Overall, the framework illustrates how forecast-driven optimization can transform raw market price signals into actionable dispatch strategies. The model provides a foundation for future extensions incorporating real NSW NEM price data, forecast uncertainty, and multi-objective battery degradation considerations.
+
 ## Author
 
 Electrical Engineering Undergraduate

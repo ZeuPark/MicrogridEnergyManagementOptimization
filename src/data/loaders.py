@@ -9,15 +9,15 @@ import pandas as pd
 
 def load_processed_data(
     data_dir: Path,
-    start_date: str,
-    end_date: str,
+    start_date: str = None,
+    end_date: str = None,
 ) -> pd.DataFrame:
     """Load processed data from CSV files.
 
     Args:
         data_dir: Directory containing processed data.
-        start_date: Start date string (YYYY-MM-DD).
-        end_date: End date string (YYYY-MM-DD).
+        start_date: Optional start date string (YYYY-MM-DD). If None, uses data start.
+        end_date: Optional end date string (YYYY-MM-DD). If None, uses data end.
 
     Returns:
         DataFrame with columns: timestamp, price, solar, load.
@@ -27,7 +27,16 @@ def load_processed_data(
         raise FileNotFoundError(f"Processed data not found: {filepath}")
 
     df = pd.read_csv(filepath, parse_dates=["timestamp"], index_col="timestamp")
-    return df.loc[start_date:end_date]
+
+    # If date range specified, try to filter; otherwise use all data
+    if start_date and end_date:
+        filtered = df.loc[start_date:end_date]
+        # If filter results in empty dataframe, use all data
+        if len(filtered) == 0:
+            return df
+        return filtered
+
+    return df
 
 
 def generate_synthetic_data(
