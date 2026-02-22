@@ -20,11 +20,12 @@ The optimizer outputs actionable dispatch schedules that maximize value extracti
 
 ## Key Performance Indicators
 
-| KPI | Description | Benchmark Result |
-|-----|-------------|------------------|
-| **Total Cost Reduction** | Reduction in net electricity costs vs. no-storage baseline | 15–25% |
-| **Peak Import Reduction** | Decrease in maximum grid import power | 30–40% |
-| **High-Price Interval Mitigation** | Reduction in grid imports during top-quartile price periods | 50–70% |
+| KPI | Description |
+|-----|-------------|
+| **Net Cost Reduction** | Reduction in electricity procurement cost vs. no-storage baseline |
+| **Peak Import Mitigation** | Avoidance of grid imports during extreme price intervals (>$1,000/MWh) |
+| **Negative Price Capture** | Value extracted from grid charging during oversupply (negative pricing) |
+| **Self-Consumption Rate** | Proportion of solar generation consumed on-site via storage |
 
 ## Industry Relevance
 
@@ -68,13 +69,16 @@ cd MicrogridEnergyManagementOptimization
 python -m venv .venv && .venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 
-# Run optimization pipeline
-python scripts/run_baseline.py --synthetic
-python scripts/run_optimization.py --synthetic
-python scripts/run_sensitivity.py
+# Run with real NEM data
+python scripts/ingest_data.py --period 7d
+python scripts/run_baseline.py
+python scripts/run_optimization.py
+
+# Or use synthetic data for benchmarking
+python scripts/ingest_data.py --synthetic
 ```
 
-Synthetic load and price profiles are included for benchmarking and reproducibility.
+Real-time NEM price data is fetched via OpenElectricity API. Synthetic profiles available for reproducible benchmarking.
 
 ## Project Structure
 
@@ -91,13 +95,14 @@ Synthetic load and price profiles are included for benchmarking and reproducibil
 
 ## Development Roadmap
 
-| Phase | Milestone |
-|-------|-----------|
-| **v1.1** | Integration with AEMO NEM API for live spot price ingestion |
-| **v1.2** | Rolling-horizon Model Predictive Control (MPC) implementation |
-| **v2.0** | Stochastic optimization for forecast uncertainty quantification |
-| **v2.1** | Multi-objective formulation: cost vs. battery degradation trade-off |
-| **v3.0** | 5-minute dispatch resolution aligned with NEM settlement periods |
+| Phase | Milestone | Status |
+|-------|-----------|--------|
+| **v1.0** | Core LP optimization with synthetic data | Done |
+| **v1.1** | Real NEM price data integration (OpenElectricity API) | Done |
+| **v1.2** | Rolling-horizon Model Predictive Control (MPC) | Planned |
+| **v2.0** | Stochastic optimization for forecast uncertainty | Planned |
+| **v2.1** | Multi-objective: cost vs. battery degradation | Planned |
+| **v3.0** | 5-minute dispatch aligned with NEM settlement | Planned |
 
 ## Testing
 
@@ -109,21 +114,25 @@ pytest tests/ -v
 
 This project demonstrates that optimization-based battery dispatch can materially reduce electricity procurement cost under volatile wholesale market conditions.
 
-Key outcomes include:
+**Validation with Real NEM Data**
 
-1. **Economic Performance**
-   The LP-based optimization consistently reduced total electricity cost compared to a no-storage baseline by strategically shifting grid imports away from high-price intervals.
+Using real NSW NEM price data (Dec 2024), the optimization model reduced net electricity cost by strategically avoiding extreme price spikes exceeding $5,000/MWh and exploiting negative pricing intervals during oversupply conditions.
 
-2. **Peak Import Mitigation**
-   The optimized schedule significantly reduced peak grid import levels, indicating improved load smoothing and reduced exposure to extreme price periods.
+Key outcomes:
+
+1. **Extreme Event Mitigation**
+   The economic value is driven primarily by avoidance of extreme price spike intervals. The optimizer pre-charges batteries during low-price periods to avoid forced imports during scarcity events.
+
+2. **Negative Price Exploitation**
+   The optimizer exploits negative pricing periods by charging from the grid, effectively monetizing oversupply conditions—a behavior unique to real wholesale market dynamics.
 
 3. **Operational Interpretability**
    The resulting dispatch pattern aligns with expected economic behavior—charging during periods of solar surplus or low prices and discharging during evening peak demand—confirming model consistency with market incentives.
 
 4. **Computational Efficiency**
-   The convex formulation enables fast solution times, supporting scalability to longer horizons and potential rolling-horizon implementations.
+   The convex formulation solves in under 0.3 seconds, supporting real-time deployment in rolling-horizon MPC architectures.
 
-Overall, the framework illustrates how forecast-driven optimization can transform raw market price signals into actionable dispatch strategies. The model provides a foundation for future extensions incorporating real NSW NEM price data, forecast uncertainty, and multi-objective battery degradation considerations.
+See [`reports/optimization_report.md`](reports/optimization_report.md) for detailed analysis with real market data.
 
 ## Author
 
