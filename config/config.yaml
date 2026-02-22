@@ -1,0 +1,63 @@
+# Microgrid Energy Management Optimization - Configuration
+# =========================================================
+
+project:
+  name: "Microgrid Energy Management"
+  version: "1.0.0"
+  author: "Your Name"
+
+# Data settings
+data:
+  region: "NSW1"                    # NEM region identifier
+  start_date: "2024-01-01"
+  end_date: "2024-01-07"
+  resolution_minutes: 60            # Time resolution (60 for hourly, 5 for dispatch)
+  timezone: "Australia/Sydney"
+
+# Battery parameters
+battery:
+  capacity_kwh: 13.5                # Total energy capacity (e.g., Tesla Powerwall 2)
+  max_power_kw: 5.0                 # Max charge/discharge power
+  efficiency_charge: 0.95           # Charging efficiency (0-1)
+  efficiency_discharge: 0.95        # Discharging efficiency (0-1)
+  soc_min: 0.1                      # Minimum SOC fraction
+  soc_max: 0.9                      # Maximum SOC fraction
+  soc_initial: 0.5                  # Initial SOC fraction
+  cycle_cost_per_kwh: 0.02          # Degradation cost per kWh throughput ($)
+
+# Solar PV system
+solar:
+  capacity_kw: 6.6                  # Installed PV capacity
+  data_source: "synthetic"          # "synthetic" | "api" | "csv"
+  csv_path: null                    # Path if using CSV
+
+# Load profile
+load:
+  profile_type: "residential"       # "residential" | "commercial" | "industrial"
+  annual_kwh: 7000                  # Annual consumption estimate
+  data_source: "synthetic"          # "synthetic" | "api" | "csv"
+  csv_path: null
+
+# Grid and pricing
+grid:
+  feed_in_tariff: 0.05              # Export price ($/kWh)
+  max_import_kw: 10.0               # Grid import limit
+  max_export_kw: 5.0                # Grid export limit
+
+# Optimization settings
+optimization:
+  solver: "CVXPY"                   # "CVXPY" | "PULP"
+  backend: "HIGHS"                  # Solver backend (HIGHS, GLPK, CBC)
+  objective: "min_cost"             # "min_cost" | "min_grid" | "max_self_consumption"
+  lookahead_hours: 24               # Optimization horizon
+
+# Sensitivity analysis
+sensitivity:
+  parameter: "battery.capacity_kwh"
+  values: [5.0, 10.0, 13.5, 20.0, 30.0]
+
+# Output paths
+output:
+  results_dir: "data/processed"
+  figures_dir: "reports/figures"
+  log_level: "INFO"                 # DEBUG, INFO, WARNING, ERROR
