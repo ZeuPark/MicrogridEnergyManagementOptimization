@@ -45,7 +45,7 @@ The economic value is driven by two primary mechanisms:
 
 1. **Extreme Spike Avoidance**
    - Avoided grid imports during $5,548/MWh price spike
-   - Estimated single-event value: >$15
+   - The majority of weekly economic value was captured during a single extreme price event exceeding $5,000/MWh
 
 2. **Negative Price Exploitation**
    - Charged battery during negative pricing periods
@@ -150,13 +150,13 @@ cat reports/optimization_report.md
 ## Interview Talking Points
 
 1. **"What problem does this solve?"**
-   > Reduces exposure to wholesale electricity price volatility by optimizing battery dispatch based on real-time NEM price signals.
+   > Reduces electricity procurement cost by minimizing grid imports during extreme wholesale price intervals.
 
 2. **"How does it create value?"**
    > Two mechanisms: avoiding grid imports during extreme price spikes (>$5,000/MWh) and exploiting negative pricing during oversupply by charging the battery.
 
 3. **"Why LP optimization?"**
-   > Convex formulation guarantees global optimum, solves in <0.3s enabling real-time deployment, and scales to longer horizons for MPC implementation.
+   > Convex formulation guarantees global optimum, solves in <0.3s, supporting potential rolling-horizon implementations.
 
 4. **"What makes this different from a typical ML project?"**
    > This is operational strategy design, not prediction. It integrates market understanding (NEM price dynamics), optimization theory (LP formulation), and engineering constraints (battery physics).
